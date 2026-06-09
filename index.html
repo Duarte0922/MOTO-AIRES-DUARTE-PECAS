@@ -48,25 +48,15 @@
         .thumb-manage-item.is-cover { border-color: var(--orange); }
         .thumb-manage-item.is-cover::after { content: "CAPA"; position: absolute; bottom: 0; left: 0; right: 0; background: var(--orange); color: white; font-size: 9px; font-weight: bold; text-align: center; padding: 1px 0; }
 
-        /* ─── CARROSSEL CATEGORIAS ─── */
+        /* ─── CARROSSEL DE CATEGORIAS (O QUE VOCÊ MOSTROU NA FOTO) ─── */
         .hero-slider { display: flex; padding: 20px 40px; gap: 15px; overflow-x: auto; background: #111; border-bottom: 1px solid var(--border); }
-        .slide { min-width: 200px; height: 120px; position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; flex-shrink: 0; }
+        .slide { min-width: 240px; height: 140px; position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; flex-shrink: 0; }
         .slide:hover { border-color: var(--orange); transform: scale(1.02); }
-        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
-        .slide-caption { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; background: rgba(0,0,0,0.3); }
+        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.45; transition: 0.3s; }
+        .slide:hover img { opacity: 0.7; }
+        .slide-caption { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; background: rgba(0,0,0,0.4); text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
 
-        /* ─── CARROSSEL BANNER DESTAQUES ─── */
-        .carousel-section { position: relative; overflow: hidden; height: 350px; background: #111; border-bottom: 1px solid var(--border); margin-top: 20px; }
-        .carousel-track { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(.77,0,.175,1); }
-        .carousel-slide { min-width: 100%; height: 100%; position: relative; flex-shrink: 0; cursor: pointer; }
-        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-        .carousel-slide-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
-        .carousel-slide-name { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 2px; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: 1px solid var(--border); color: white; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; z-index: 10; }
-        .carousel-btn.prev { left: 20px; }
-        .carousel-btn.next { right: 20px; }
-
-        /* ─── TABS ─── */
+        /* ─── TABS ABAIXO DO CARROSSEL ─── */
         .tabs-wrap { padding: 24px 40px 0; display: flex; gap: 8px; flex-wrap: wrap; }
         .tab-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .tab-btn.active { background: var(--orange); border-color: var(--orange); color: white; }
@@ -105,7 +95,7 @@
 
         @media (max-width: 600px) {
             .hero, .admin-panel, .tabs-wrap, .gallery-wrap { padding: 20px; margin: 10px; }
-            .carousel-section, .modal-carousel { height: 250px; }
+            .modal-carousel { height: 250px; }
             .hero-slider { padding: 10px 20px; }
         }
     </style>
@@ -128,24 +118,19 @@
 </header>
 
 <section class="hero-slider">
-    <div class="slide" onclick="abrirCategoria('Motos')">
-        <img src="img/augusta.jpg" alt="Motos">
+    <div class="slide" onclick="abrirCategoria('motos')">
+        <img id="capa-motos" src="img/augusta.jpg" alt="Motos">
         <div class="slide-caption">MOTOS</div>
     </div>
 
-    <div class="slide" onclick="abrirCategoria('Quadriciclos')">
-        <img src="img/augusta.jpg" alt="Quadriciclos">
+    <div class="slide" onclick="abrirCategoria('quadriciclos')">
+        <img id="capa-quadriciclos" src="img/augusta.jpg" alt="Quadriciclos">
         <div class="slide-caption">QUADRICICLOS</div>
     </div>
 
-    <div class="slide" onclick="abrirCategoria('Peças')">
-        <img src="img/augusta.jpg" alt="Peças">
+    <div class="slide" onclick="abrirCategoria('pecas')">
+        <img id="capa-pecas" src="img/augusta.jpg" alt="Peças">
         <div class="slide-caption">PEÇAS</div>
-    </div>
-
-    <div class="slide" onclick="abrirCategoria('Acessórios')">
-        <img src="img/augusta.jpg" alt="Acessórios">
-        <div class="slide-caption">ACESSÓRIOS</div>
     </div>
 </section>
 
@@ -191,17 +176,11 @@
     </div>
 </section>
 
-<div class="carousel-section">
-    <div id="carouselTrack" class="carousel-track"></div>
-    <button class="carousel-btn prev" onclick="moverCarrossel(-1)">&#8249;</button>
-    <button class="carousel-btn next" onclick="moverCarrossel(1)">&#8250;</button>
-</div>
-
 <nav class="tabs-wrap">
-    <button class="tab-btn active" onclick="filterCategory('todos', this)">Todos</button>
-    <button class="tab-btn" onclick="filterCategory('motos', this)">Motos</button>
-    <button class="tab-btn" onclick="filterCategory('pecas', this)">Peças</button>
-    <button class="tab-btn" onclick="filterCategory('quadriciclos', this)">Quadriciclos</button>
+    <button id="tab-todos" class="tab-btn active" onclick="filterCategory('todos', this)">Todos</button>
+    <button id="tab-motos" class="tab-btn" onclick="filterCategory('motos', this)">Motos</button>
+    <button id="tab-pecas" class="tab-btn" onclick="filterCategory('pecas', this)">Peças</button>
+    <button id="tab-quadriciclos" class="tab-btn" onclick="filterCategory('quadriciclos', this)">Quadriciclos</button>
 </nav>
 
 <main class="gallery-wrap">
@@ -224,7 +203,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
-    // 1. CONFIGURAÇÃO DO SEU FIREBASE
+    // CONFIGURAÇÃO DO SEU FIREBASE
     const firebaseConfig = {
         apiKey: "...", 
         authDomain: "moto-aires-catalogo.firebaseapp.com",
@@ -234,16 +213,13 @@
         appId: "..."
     };
     
-    // Inicializa o Firebase e o Banco de Dados Firestore
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     let produtos = [];
     let categoriaAtiva = 'todos';
-    let carrosselIdx = 0;
     let fotosTemporarias = [];
 
-    // 2. CARREGAR FOTOS NO PAINEL ANTES DE SALVAR
     function carregarFotosPainel(files) {
         fotosTemporarias = [];
         let carregadas = 0;
@@ -284,7 +260,6 @@
         renderizarGerenciadorCapa();
     }
 
-    // 3. ENVIAR E SALVAR PRODUTO NA NUVEM DO FIREBASE
     async function salvarProduto() {
         const nome = document.getElementById('prodName').value;
         const categoria = document.getElementById('prodCategory').value;
@@ -313,7 +288,6 @@
             await db.collection("produtos").add(dados);
             alert("Sucesso! Produto cadastrado e salvo na nuvem!");
             
-            // Limpa o painel para o próximo cadastro
             document.getElementById('prodName').value = '';
             document.getElementById('prodAno').value = '';
             document.getElementById('prodModelo').value = '';
@@ -322,20 +296,20 @@
             fotosTemporarias = [];
             document.getElementById('previewManagement').style.display = 'none';
         } catch (error) {
-            console.error("Erro ao salvar no Firebase: ", error);
-            alert("Erro ao conectar com o Firebase. Verifique suas regras de banco.");
+            console.error("Erro ao salvar: ", error);
         }
     }
 
-    // 4. BUSCAR AUTOMATICAMENTE OS PRODUTOS SALVOS NA NUVEM
+    // 🕒 ESCUTA EM TEMPO REAL DO BANCO DE DADOS
     function buscarProdutosSalvos() {
         db.collection("produtos").orderBy("dataCriacao", "desc").onSnapshot((snapshot) => {
             produtos = [];
             snapshot.forEach((doc) => {
                 produtos.push({ id: doc.id, ...doc.data() });
             });
+            
             renderizar();
-            atualizarCarrossel();
+            atualizarImagensDoMenuCarrossel(); // Atualiza as fotos de fundo do menu superior
         });
     }
 
@@ -343,7 +317,6 @@
         buscarProdutosSalvos();
     };
 
-    // 5. APAGAR PRODUTO DA NUVEM DO FIREBASE
     async function removerProduto(id, event) {
         event.stopPropagation();
         if (confirm("Tem certeza que deseja remover este item para sempre?")) {
@@ -352,63 +325,51 @@
                 alert("Item removido com sucesso!");
             } catch (error) {
                 console.error("Erro ao remover: ", error);
-                alert("Erro ao remover o item do banco de dados.");
             }
         }
     }
 
-    // 6. CONTROLES VISUAIS DO SITE E FILTROS
-    function abrirCategoria(categoria) {
-        const catMap = { 'Motos': 'motos', 'Peças': 'pecas', 'Quadriciclos': 'quadriciclos' };
-        const catFiltrada = catMap[categoria] || 'todos';
+    // 🎯 FUNÇÃO QUE COLOCA A PRIMEIRA FOTO DO ÚLTIMO PRODUTO SALVO NO FUNDO DO SEU CARROSSEL
+    function atualizarImagensDoMenuCarrossel() {
+        // Encontra o item mais recente de cada categoria
+        const ultimaMoto = produtos.find(p => p.categoria === 'motos');
+        const ultimoQuadriciclo = produtos.find(p => p.categoria === 'quadriciclos');
+        const ultimaPeca = produtos.find(p => p.categoria === 'pecas');
+
+        // Se existir uma moto cadastrada, coloca a foto dela. Se não existir (ou for excluída), volta a foto padrão!
+        const imgMotos = document.getElementById('capa-motos');
+        if (ultimaMoto && ultimaMoto.imagens && ultimaMoto.imagens[0]) {
+            imgMotos.src = ultimaMoto.imagens[0];
+        } else {
+            imgMotos.src = 'img/augusta.jpg';
+        }
+
+        // Faz o mesmo para Quadriciclos
+        const imgQuadriciclos = document.getElementById('capa-quadriciclos');
+        if (ultimoQuadriciclo && ultimoQuadriciclo.imagens && ultimoQuadriciclo.imagens[0]) {
+            imgQuadriciclos.src = ultimoQuadriciclo.imagens[0];
+        } else {
+            imgQuadriciclos.src = 'img/augusta.jpg';
+        }
+
+        // Faz o mesmo para Peças
+        const imgPecas = document.getElementById('capa-pecas');
+        if (ultimaPeca && ultimaPeca.imagens && ultimaPeca.imagens[0]) {
+            imgPecas.src = ultimaPeca.imagens[0];
+        } else {
+            imgPecas.src = 'img/augusta.jpg';
+        }
+    }
+
+    // FILTRO AO CLICAR NOS ENCARDOS GRANDES DO TOPOMENU
+    function abrirCategoria(cat) {
+        categoriaAtiva = cat;
         
-        categoriaAtiva = catFiltrada;
-        carrosselIdx = 0;
-        
-        document.querySelectorAll('.tab-btn').forEach(b => {
-            if(b.textContent.toLowerCase() === categoria.toLowerCase() || (categoria === 'Todos' && b.textContent === 'Todos')) {
-                b.classList.add('active');
-            } else {
-                b.classList.remove('active');
-            }
-        });
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const botaoAlvo = document.getElementById(`tab-${cat}`);
+        if(botaoAlvo) botaoAlvo.classList.add('active');
 
         renderizar();
-        atualizarCarrossel();
-    }
-
-    // AQUI ARRUMEI PARA A FOTO APARECER QUANDO NÃO HOUVER ITENS CADASTRADOS
-    function atualizarCarrossel() {
-        const track = document.getElementById('carouselTrack');
-        const lista = categoriaAtiva === 'todos' ? produtos : produtos.filter(p => p.categoria === categoriaAtiva);
-        
-        if (lista.length === 0) {
-            track.innerHTML = `
-                <div class="carousel-slide">
-                    <img src="img/augusta.jpg">
-                    <div class="carousel-slide-info">
-                        <div class="carousel-slide-name">MOTO AIRES & DUARTE PEÇAS</div>
-                    </div>
-                </div>`;
-            track.style.transform = `translateX(0px)`;
-            return;
-        }
-
-        track.innerHTML = lista.map(p => `
-            <div class="carousel-slide" onclick="abrirModal('${p.id}')">
-                <img src="${p.imagens[0]}">
-                <div class="carousel-slide-info">
-                    <div class="carousel-slide-name">${p.nome} ${p.ano ? ' | ' + p.ano : ''}</div>
-                </div>
-            </div>`).join('');
-        track.style.transform = `translateX(-${carrosselIdx * 100}%)`;
-    }
-
-    function moverCarrossel(dir) {
-        const lista = categoriaAtiva === 'todos' ? produtos : produtos.filter(p => p.categoria === categoriaAtiva);
-        if (lista.length === 0) return;
-        carrosselIdx = (carrosselIdx + dir + lista.length) % lista.length;
-        atualizarCarrossel();
     }
 
     function renderizar() {
@@ -440,14 +401,11 @@
 
     function filterCategory(cat, btn) {
         categoriaAtiva = cat;
-        carrosselIdx = 0;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderizar();
-        atualizarCarrossel();
     }
 
-    // 7. EXPANDIR CARD E DETALHES NO MODAL
     let modalIdx = 0;
     function abrirModal(id) {
         const p = produtos.find(item => item.id === id);
