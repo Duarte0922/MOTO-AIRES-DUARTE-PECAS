@@ -48,8 +48,15 @@
         .thumb-manage-item.is-cover { border-color: var(--orange); }
         .thumb-manage-item.is-cover::after { content: "CAPA"; position: absolute; bottom: 0; left: 0; right: 0; background: var(--orange); color: white; font-size: 9px; font-weight: bold; text-align: center; padding: 1px 0; }
 
-        /* ─── CARROSSEL BANNER ─── */
-        .carousel-section { position: relative; overflow: hidden; height: 350px; background: #111; border-bottom: 1px solid var(--border); }
+        /* ─── CARROSSEL CATEGORIAS ─── */
+        .hero-slider { display: flex; padding: 20px 40px; gap: 15px; overflow-x: auto; background: #111; border-bottom: 1px solid var(--border); }
+        .slide { min-width: 200px; height: 120px; position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .slide:hover { border-color: var(--orange); transform: scale(1.02); }
+        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+        .slide-caption { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; background: rgba(0,0,0,0.3); }
+
+        /* ─── CARROSSEL BANNER DESTAQUES ─── */
+        .carousel-section { position: relative; overflow: hidden; height: 350px; background: #111; border-bottom: 1px solid var(--border); margin-top: 20px; }
         .carousel-track { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(.77,0,.175,1); }
         .carousel-slide { min-width: 100%; height: 100%; position: relative; flex-shrink: 0; cursor: pointer; }
         .carousel-slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
@@ -99,8 +106,12 @@
         @media (max-width: 600px) {
             .hero, .admin-panel, .tabs-wrap, .gallery-wrap { padding: 20px; margin: 10px; }
             .carousel-section, .modal-carousel { height: 250px; }
+            .hero-slider { padding: 10px 20px; }
         }
     </style>
+</head>
+<body>
+
 <header class="hero" style="
     position: relative; 
     overflow: hidden; 
@@ -116,31 +127,29 @@
         AS PEÇAS QUE VCS NÃO ENCONTRAM NEM NA CHINA.....VCS AGORA ESTÃO NO LUGAR CERTO!!!
     </h3>
 </header>
+
 <section class="hero-slider">
-    <div class="slider-track">
+    <div class="slide" onclick="abrirCategoria('Motos')">
+        <img src="img/augusta.jpg" alt="Motos">
+        <div class="slide-caption">MOTOS</div>
+    </div>
 
-        <div class="slide" onclick="abrirCategoria('Motos')">
-            <img src="img/augusta.jpg" alt="Motos" style="width: 100%; height: 100%; object-fit: cover;">
-            <div class="slide-caption">MOTOS</div>
-        </div>
+    <div class="slide" onclick="abrirCategoria('Quadriciclos')">
+        <img src="img/augusta.jpg" alt="Quadriciclos">
+        <div class="slide-caption">QUADRICICLOS</div>
+    </div>
 
-        <div class="slide" onclick="abrirCategoria('Quadriciclos')">
-            <img src="img/augusta.jpg" alt="Quadriciclos" style="width: 100%; height: 100%; object-fit: cover;">
-            <div class="slide-caption">QUADRICICLOS</div>
-        </div>
+    <div class="slide" onclick="abrirCategoria('Peças')">
+        <img src="img/augusta.jpg" alt="Peças">
+        <div class="slide-caption">PEÇAS</div>
+    </div>
 
-        <div class="slide" onclick="abrirCategoria('Peças')">
-            <img src="img/augusta.jpg" alt="Peças" style="width: 100%; height: 100%; object-fit: cover;">
-            <div class="slide-caption">PEÇAS</div>
-        </div>
-
-        <div class="slide" onclick="abrirCategoria('Acessórios')">
-            <img src="img/augusta.jpg" alt="Acessórios" style="width: 100%; height: 100%; object-fit: cover;">
-            <div class="slide-caption">ACESSÓRIOS</div>
-        </div>
-
+    <div class="slide" onclick="abrirCategoria('Acessórios')">
+        <img src="img/augusta.jpg" alt="Acessórios">
+        <div class="slide-caption">ACESSÓRIOS</div>
     </div>
 </section>
+
 <section class="admin-panel">
     <div class="admin-title">▸ Adicionar Novo Item</div>
     <div class="admin-fields">
@@ -175,7 +184,6 @@
         <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Selecionar Fotos</button>
         <input type="file" id="fileInput" accept="image/*" multiple onchange="carregarFotosPainel(this.files)">
     </div>
-</section>
 
     <div class="preview-management" id="previewManagement">
         <p>💡 Clique em uma das imagens abaixo para defini-la como a <strong>Foto de Capa</strong> principal:</p>
@@ -213,21 +221,30 @@
     </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
 <script>
-        const firebaseConfig = {
-    apiKey: "...",
-    authDomain: "moto-aires-catalogo.firebaseapp.com",
-    projectId: "moto-aires-catalogo",
-    storageBucket: "moto-aires-catalogo.firebasestorage.app",
-    messagingSenderId: "...",
-    appId: "..."
+    // 1. CONFIGURAÇÃO DO SEU FIREBASE
+    const firebaseConfig = {
+        apiKey: "...", 
+        authDomain: "moto-aires-catalogo.firebaseapp.com",
+        projectId: "moto-aires-catalogo",
+        storageBucket: "moto-aires-catalogo.firebasestorage.app",
+        messagingSenderId: "...",
+        appId: "..."
     };
+    
+    // Inicializa o Firebase e o Banco de Dados Firestore
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     let produtos = [];
     let categoriaAtiva = 'todos';
     let carrosselIdx = 0;
-    
     let fotosTemporarias = [];
 
+    // 2. CARREGAR FOTOS NO PAINEL ANTES DE SALVAR
     function carregarFotosPainel(files) {
         fotosTemporarias = [];
         let carregadas = 0;
@@ -244,34 +261,12 @@
             reader.readAsDataURL(file);
         });
     }
-    function abrirCategoria(categoria){
-
-    categoriaSelecionada = categoria;
-
-    renderizar();
-
-    document.querySelector(".catalogo")
-        ?.scrollIntoView({
-            behavior:'smooth'
-        });
-    }
-
-
-    
-    function abrirProduto(id){
-
-    const produto =
-        produtos.find(p => p.id == id);
-
-    abrirModal(produto);
-
-    }
 
     function renderizarGerenciadorCapa() {
         const container = document.getElementById('previewThumbsContainer');
         const painel = document.getElementById('previewManagement');
         
-        if(fotosTemporarias.length === 0) {
+        if (fotosTemporarias.length === 0) {
             painel.style.display = 'none';
             return;
         }
@@ -284,7 +279,13 @@
         `).join('');
     }
 
-    // FUNÇÃO QUE SALVA O PRODUTO DEFINITIVAMENTE NO FIREBASE
+    function definirComoCapa(idx) {
+        const fotoSelecionada = fotosTemporarias.splice(idx, 1)[0];
+        fotosTemporarias.unshift(fotoSelecionada);
+        renderizarGerenciadorCapa();
+    }
+
+    // 3. ENVIAR E SALVAR PRODUTO NA NUVEM DO FIREBASE
     async function salvarProduto() {
         const nome = document.getElementById('prodName').value;
         const categoria = document.getElementById('prodCategory').value;
@@ -298,96 +299,83 @@
             return;
         }
 
-        const novoProduto = {
+        const dados = {
             nome: nome,
             categoria: categoria,
             ano: ano,
             modelo: modelo,
             km: km,
             preco: preco,
-            imagens: fotosTemporarias, // Aqui salvamos as fotos convertidas
+            imagens: [...fotosTemporarias],
             dataCriacao: new Date().toISOString()
         };
 
         try {
-            // Envia direto para a coleção 'produtos' do seu Firebase
-            await db.collection("produtos").add(novoProduto);
-            alert("Sucesso! Produto salvo e publicado no catálogo!");
+            await db.collection("produtos").add(dados);
+            alert("Sucesso! Produto cadastrado e salvo na nuvem!");
             
-            // Limpa os campos para o próximo cadastro
+            // Limpa o painel para o próximo cadastro
             document.getElementById('prodName').value = '';
+            document.getElementById('prodAno').value = '';
+            document.getElementById('prodModelo').value = '';
+            document.getElementById('prodKm').value = '';
+            document.getElementById('prodPreco').value = '';
             fotosTemporarias = [];
+            document.getElementById('previewManagement').style.display = 'none';
         } catch (error) {
             console.error("Erro ao salvar no Firebase: ", error);
-            alert("Erro ao salvar. Verifique a conexão com o banco de dados.");
+            alert("Erro ao conectar com o Firebase. Verifique suas regras de banco.");
         }
     }
 
-    // FUNÇÃO QUE BUSCA AS FOTOS SALVAS NO BANCO QUANDO O SITE ABRE
+    // 4. BUSCAR AUTOMATICAMENTE OS PRODUTOS SALVOS NA NUVEM
     function buscarProdutosSalvos() {
         db.collection("produtos").orderBy("dataCriacao", "desc").onSnapshot((snapshot) => {
             produtos = [];
             snapshot.forEach((doc) => {
                 produtos.push({ id: doc.id, ...doc.data() });
             });
-            renderizar(); // Atualiza a tela com as motos salvas de verdade
+            renderizar();
+            atualizarCarrossel();
         });
     }
 
-    // Executa a busca assim que o site carrega na tela
     window.onload = function() {
         buscarProdutosSalvos();
     };
 
-
-
-
-
-
-    function definirComoCapa(idx) {
-        const fotoSelecionada = fotosTemporarias.splice(idx, 1)[0];
-        fotosTemporarias.unshift(fotoSelecionada);
-        renderizarGerenciadorCapa();
+    // 5. APAGAR PRODUTO DA NUVEM DO FIREBASE
+    async function removerProduto(id, event) {
+        event.stopPropagation();
+        if (confirm("Tem certeza que deseja remover este item para sempre?")) {
+            try {
+                await db.collection("produtos").doc(id).delete();
+                alert("Item removido com sucesso!");
+            } catch (error) {
+                console.error("Erro ao remover: ", error);
+                alert("Erro ao remover o item do banco de dados.");
+            }
+        }
     }
 
-    function salvarProduto() {
-        if(fotosTemporarias.length === 0) {
-            alert("Por favor, selecione ao menos uma foto antes de salvar.");
-            return;
-        }
-
-        const dados = {
-            id: Date.now(),
-            nome: document.getElementById('prodName').value || "Sem nome",
-            categoria: document.getElementById('prodCategory').value,
-            ano: document.getElementById('prodAno').value,
-            modelo: document.getElementById('prodModelo').value,
-            km: document.getElementById('prodKm').value,
-            preco: document.getElementById('prodPreco').value,
-            imagens: [...fotosTemporarias]
-        };
-
-        produtos.push(dados);
+    // 6. CONTROLES VISUAIS DO SITE E FILTROS
+    function abrirCategoria(categoria) {
+        const catMap = { 'Motos': 'motos', 'Peças': 'pecas', 'Quadriciclos': 'quadriciclos' };
+        const catFiltrada = catMap[categoria] || 'todos';
         
-        document.getElementById('prodName').value = '';
-        document.getElementById('prodAno').value = '';
-        document.getElementById('prodModelo').value = '';
-        document.getElementById('prodKm').value = '';
-        document.getElementById('prodPreco').value = '';
-        fotosTemporarias = [];
-        document.getElementById('previewManagement').style.display = 'none';
+        categoriaAtiva = catFiltrada;
+        carrosselIdx = 0;
+        
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            if(b.textContent.toLowerCase() === categoria.toLowerCase() || (categoria === 'Todos' && b.textContent === 'Todos')) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
 
         renderizar();
         atualizarCarrossel();
-    }
-
-    function removerProduto(id, event) {
-        event.stopPropagation();
-        if(confirm("Tem certeza que deseja remover este item?")) {
-            produtos = produtos.filter(p => p.id !== id);
-            renderizar();
-            atualizarCarrossel();
-        }
     }
 
     function atualizarCarrossel() {
@@ -400,7 +388,7 @@
         }
 
         track.innerHTML = lista.map(p => `
-            <div class="carousel-slide" onclick="abrirModal(${p.id})">
+            <div class="carousel-slide" onclick="abrirModal('${p.id}')">
                 <img src="${p.imagens[0]}">
                 <div class="carousel-slide-info">
                     <div class="carousel-slide-name">${p.nome} ${p.ano ? ' | ' + p.ano : ''}</div>
@@ -426,8 +414,8 @@
         }
 
         gallery.innerHTML = lista.map(p => `
-            <div class="product-card" onclick="abrirModal(${p.id})">
-                <button class="delete-btn" onclick="removerProduto(${p.id}, event)" title="Remover Produto">🗑️</button>
+            <div class="product-card" onclick="abrirModal('${p.id}')">
+                <button class="delete-btn" onclick="removerProduto('${p.id}', event)" title="Remover Produto">🗑️</button>
                 <div class="card-img-wrap">
                     <img src="${p.imagens[0]}">
                     ${p.imagens.length > 1 ? `<div class="card-img-count">+${p.imagens.length} fotos</div>` : ''}
@@ -452,6 +440,7 @@
         atualizarCarrossel();
     }
 
+    // 7. EXPANDIR CARD E DETALHES NO MODAL
     let modalIdx = 0;
     function abrirModal(id) {
         const p = produtos.find(item => item.id === id);
@@ -460,7 +449,7 @@
         
         document.getElementById('modalTrack').innerHTML = p.imagens.map(img => `
             <div class="modal-slide"><img src="${img}"></div>`).join('');
-        
+            
         document.getElementById('modalInfo').innerHTML = `
             <h2 style="font-family:Bebas Neue; font-size:40px">${p.nome}</h2>
             <p style="color:var(--orange); font-size:20px; margin-bottom:15px">R$ ${p.preco}</p>
@@ -470,9 +459,8 @@
                 <div class="spec-pill">KM: ${p.km}</div>
                 <div class="spec-pill">Categoria: ${p.categoria}</div>
             </div>
-            <a href="#" style="display:block; background:#1DB954; color:white; text-align:center; padding:15px; border-radius:10px; text-decoration:none; margin-top:20px; font-weight:bold">Tenho Interesse</a>
+            <a href="https://wa.me/5531999999999?text=Olá,%20tenho%20interesse%20na%20${encodeURIComponent(p.nome)}" target="_blank" style="display:block; background:#1DB954; color:white; text-align:center; padding:15px; border-radius:10px; text-decoration:none; margin-top:20px; font-weight:bold">Tenho Interesse</a>
         `;
-        
         document.getElementById('modalOverlay').classList.add('open');
         mudarSlideModal(0);
     }
