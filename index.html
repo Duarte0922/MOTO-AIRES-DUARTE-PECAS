@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<head>   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOTO AIRES & DUARTE PEÇAS — Catálogo</title>
@@ -120,28 +120,27 @@
     <div class="slider-track">
 
         <div class="slide" onclick="abrirCategoria('Motos')">
-            <img src="img/moto1.jpg">
+            <img src="img/augusta.jpg" alt="Motos" style="width: 100%; height: 100%; object-fit: cover;">
             <div class="slide-caption">MOTOS</div>
         </div>
 
         <div class="slide" onclick="abrirCategoria('Quadriciclos')">
-            <img src="img/quadri1.jpg">
+            <img src="img/augusta.jpg" alt="Quadriciclos" style="width: 100%; height: 100%; object-fit: cover;">
             <div class="slide-caption">QUADRICICLOS</div>
         </div>
 
         <div class="slide" onclick="abrirCategoria('Peças')">
-            <img src="img/pecas.jpg">
+            <img src="img/augusta.jpg" alt="Peças" style="width: 100%; height: 100%; object-fit: cover;">
             <div class="slide-caption">PEÇAS</div>
         </div>
 
         <div class="slide" onclick="abrirCategoria('Acessórios')">
-            <img src="img/acessorios.jpg">
+            <img src="img/augusta.jpg" alt="Acessórios" style="width: 100%; height: 100%; object-fit: cover;">
             <div class="slide-caption">ACESSÓRIOS</div>
         </div>
 
     </div>
 </section>
-
 <section class="admin-panel">
     <div class="admin-title">▸ Adicionar Novo Item</div>
     <div class="admin-fields">
@@ -176,6 +175,7 @@
         <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Selecionar Fotos</button>
         <input type="file" id="fileInput" accept="image/*" multiple onchange="carregarFotosPainel(this.files)">
     </div>
+</section>
 
     <div class="preview-management" id="previewManagement">
         <p>💡 Clique em uma das imagens abaixo para defini-la como a <strong>Foto de Capa</strong> principal:</p>
@@ -214,6 +214,14 @@
 </div>
 
 <script>
+        const firebaseConfig = {
+    apiKey: "...",
+    authDomain: "moto-aires-catalogo.firebaseapp.com",
+    projectId: "moto-aires-catalogo",
+    storageBucket: "moto-aires-catalogo.firebasestorage.app",
+    messagingSenderId: "...",
+    appId: "..."
+    };
     let produtos = [];
     let categoriaAtiva = 'todos';
     let carrosselIdx = 0;
