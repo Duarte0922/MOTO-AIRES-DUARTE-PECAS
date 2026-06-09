@@ -256,6 +256,8 @@
         });
     }
 
+
+    
     function abrirProduto(id){
 
     const produto =
@@ -281,6 +283,66 @@
             </div>
         `).join('');
     }
+
+    // FUNÇÃO QUE SALVA O PRODUTO DEFINITIVAMENTE NO FIREBASE
+    async function salvarProduto() {
+        const nome = document.getElementById('prodName').value;
+        const categoria = document.getElementById('prodCategory').value;
+        const ano = document.getElementById('prodAno').value;
+        const modelo = document.getElementById('prodModelo').value;
+        const km = document.getElementById('prodKm').value;
+        const preco = document.getElementById('prodPreco').value;
+
+        if (!nome || fotosTemporarias.length === 0) {
+            alert("Por favor, digite o nome e adicione pelo menos uma foto!");
+            return;
+        }
+
+        const novoProduto = {
+            nome: nome,
+            categoria: categoria,
+            ano: ano,
+            modelo: modelo,
+            km: km,
+            preco: preco,
+            imagens: fotosTemporarias, // Aqui salvamos as fotos convertidas
+            dataCriacao: new Date().toISOString()
+        };
+
+        try {
+            // Envia direto para a coleção 'produtos' do seu Firebase
+            await db.collection("produtos").add(novoProduto);
+            alert("Sucesso! Produto salvo e publicado no catálogo!");
+            
+            // Limpa os campos para o próximo cadastro
+            document.getElementById('prodName').value = '';
+            fotosTemporarias = [];
+        } catch (error) {
+            console.error("Erro ao salvar no Firebase: ", error);
+            alert("Erro ao salvar. Verifique a conexão com o banco de dados.");
+        }
+    }
+
+    // FUNÇÃO QUE BUSCA AS FOTOS SALVAS NO BANCO QUANDO O SITE ABRE
+    function buscarProdutosSalvos() {
+        db.collection("produtos").orderBy("dataCriacao", "desc").onSnapshot((snapshot) => {
+            produtos = [];
+            snapshot.forEach((doc) => {
+                produtos.push({ id: doc.id, ...doc.data() });
+            });
+            renderizar(); // Atualiza a tela com as motos salvas de verdade
+        });
+    }
+
+    // Executa a busca assim que o site carrega na tela
+    window.onload = function() {
+        buscarProdutosSalvos();
+    };
+
+
+
+
+
 
     function definirComoCapa(idx) {
         const fotoSelecionada = fotosTemporarias.splice(idx, 1)[0];
