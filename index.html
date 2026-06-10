@@ -23,6 +23,7 @@
             --text: #F0F0F0;
             --muted: #777;
             --silver: #A0A0A0;
+            --whatsapp: #25D366;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -812,7 +813,6 @@
         </div>
         <div class="carousel-container">
             <div class="carousel" id="categoryCarousel">
-                <!-- As imagens serão carregadas dinamicamente do Firebase -->
                 <div class="category-card" onclick="filterByCategory('motos')" id="cat-motos">
                     <img src="https://via.placeholder.com/400x300/1a1a1a/FF5500?text=Carregando..." alt="Motos" id="img-motos">
                     <div class="category-overlay">
@@ -990,7 +990,7 @@
         renderizarGerenciadorCapa();
     }
 
-    // ─── SALVAR PRODUTO NO FIREBASE ───
+    // ─── SALVAR PRODUTO NO FIREBASE ──
     async function salvarProduto() {
         const nome = document.getElementById('itemName').value;
         const categoria = document.getElementById('itemCategory').value;
@@ -1035,7 +1035,7 @@
         }
     }
 
-    // ─── BUSCAR PRODUTOS DO FIREBASE ───
+    // ─── BUSCAR PRODUTOS DO FIREBASE ──
     function buscarProdutosSalvos() {
         db.collection("produtos").orderBy("dataCriacao", "desc").onSnapshot((snapshot) => {
             produtos = [];
@@ -1057,10 +1057,8 @@
             const imgElement = document.getElementById(`img-${categoria}`);
             
             if (produtosDaCategoria.length > 0 && produtosDaCategoria[0].imagens && produtosDaCategoria[0].imagens.length > 0) {
-                // Usa a primeira imagem do primeiro produto da categoria
                 imgElement.src = produtosDaCategoria[0].imagens[0];
             } else {
-                // Usa imagem placeholder se não houver produtos
                 imgElement.src = placeholderImages[categoria];
             }
         });
@@ -1127,7 +1125,6 @@
         renderizarProdutos();
         atualizarContador();
 
-        // Scroll suave até os produtos
         document.querySelector('.products-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -1163,6 +1160,11 @@
         document.getElementById('modalTrack').innerHTML = p.imagens.map(img => `
             <div class="modal-slide"><img src="${img}"></div>`).join('');
         
+        // CONFIGURE SEU NÚMERO DE WHATSAPP AQUI (com código do país e DDD, apenas números)
+        const numeroWhatsApp = "5531993058415"; 
+        const mensagemZap = encodeURIComponent(`Olá! Tenho interesse no item: ${p.nome} - R$ ${p.preco}`);
+        const linkZap = `https://wa.me/${numeroWhatsApp}?text=${mensagemZap}`;
+
         document.getElementById('modalInfo').innerHTML = `
             <h2 style="font-family:Bebas Neue; font-size:40px">${p.nome}</h2>
             <p style="color:var(--orange); font-size:20px; margin-bottom:15px">R$ ${p.preco}</p>
@@ -1172,7 +1174,9 @@
                 ${p.km ? `<div class="spec-pill">KM: ${p.km}</div>` : ''}
                 <div class="spec-pill">Categoria: ${p.categoria}</div>
             </div>
-            <a href="#" style="display:block; background:#1DB954; color:white; text-align:center; padding:15px; border-radius:10px; text-decoration:none; margin-top:20px; font-weight:bold">Tenho Interesse</a>
+            <a href="${linkZap}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:var(--whatsapp); color:white; text-align:center; padding:15px; border-radius:10px; text-decoration:none; margin-top:20px; font-weight:bold; font-size: 16px; transition: transform 0.2s;">
+                <i class="fab fa-whatsapp" style="font-size: 22px;"></i> Tenho Interesse no WhatsApp
+            </a>
         `;
         
         document.getElementById('modalOverlay').classList.add('open');
