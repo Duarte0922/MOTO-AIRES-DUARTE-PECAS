@@ -37,7 +37,7 @@
             max-width: 100vw;
         }
 
-        /* ─── HERO ─── */
+        /* ─── HERO ── */
         .hero {
             position: relative;
             width: 100%;
@@ -812,29 +812,30 @@
         </div>
         <div class="carousel-container">
             <div class="carousel" id="categoryCarousel">
-                <div class="category-card" onclick="filterByCategory('motos')">
-                    <img src="https://images.unsplash.com/photo-1568772585407-93ed8b69e0b1?w=400" alt="Motos">
+                <!-- As imagens serão carregadas dinamicamente do Firebase -->
+                <div class="category-card" onclick="filterByCategory('motos')" id="cat-motos">
+                    <img src="https://via.placeholder.com/400x300/1a1a1a/FF5500?text=Carregando..." alt="Motos" id="img-motos">
                     <div class="category-overlay">
                         <div class="category-name">MOTOS</div>
                         <div class="category-link">Ver Motos →</div>
                     </div>
                 </div>
-                <div class="category-card" onclick="filterByCategory('quadriciclos')">
-                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400" alt="Quadriciclos">
+                <div class="category-card" onclick="filterByCategory('quadriciclos')" id="cat-quadriciclos">
+                    <img src="https://via.placeholder.com/400x300/1a1a1a/FF5500?text=Carregando..." alt="Quadriciclos" id="img-quadriciclos">
                     <div class="category-overlay">
                         <div class="category-name">QUADRICICLOS</div>
                         <div class="category-link">Ver Quadriciclos →</div>
                     </div>
                 </div>
-                <div class="category-card" onclick="filterByCategory('pecas')">
-                    <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400" alt="Peças">
+                <div class="category-card" onclick="filterByCategory('pecas')" id="cat-pecas">
+                    <img src="https://via.placeholder.com/400x300/1a1a1a/FF5500?text=Carregando..." alt="Peças" id="img-pecas">
                     <div class="category-overlay">
                         <div class="category-name">PEÇAS</div>
                         <div class="category-link">Ver Peças →</div>
                     </div>
                 </div>
-                <div class="category-card" onclick="filterByCategory('acessorios')">
-                    <img src="https://images.unsplash.com/photo-1535598155894-7c94e7f186e4?w=400" alt="Acessórios">
+                <div class="category-card" onclick="filterByCategory('acessorios')" id="cat-acessorios">
+                    <img src="https://via.placeholder.com/400x300/1a1a1a/FF5500?text=Carregando..." alt="Acessórios" id="img-acessorios">
                     <div class="category-overlay">
                         <div class="category-name">ACESSÓRIOS</div>
                         <div class="category-link">Ver Acessórios →</div>
@@ -931,6 +932,14 @@
     let fotosTemporarias = [];
     let categoriaAtiva = 'todos';
     let modalIdx = 0;
+
+    // Imagens placeholder por categoria
+    const placeholderImages = {
+        motos: 'https://images.unsplash.com/photo-1568772585407-93ed8b69e0b1?w=400',
+        quadriciclos: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400',
+        pecas: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400',
+        acessorios: 'https://images.unsplash.com/photo-1535598155894-7c94e7f186e4?w=400'
+    };
 
     // Verifica se é admin
     const isAdmin = new URLSearchParams(window.location.search).has('admin');
@@ -1033,8 +1042,27 @@
             snapshot.forEach((doc) => {
                 produtos.push({ id: doc.id, ...doc.data() });
             });
+            atualizarImagensCategorias();
             renderizarProdutos();
             atualizarContador();
+        });
+    }
+
+    // ─── ATUALIZAR IMAGENS DAS CATEGORIAS ───
+    function atualizarImagensCategorias() {
+        const categorias = ['motos', 'quadriciclos', 'pecas', 'acessorios'];
+        
+        categorias.forEach(categoria => {
+            const produtosDaCategoria = produtos.filter(p => p.categoria === categoria);
+            const imgElement = document.getElementById(`img-${categoria}`);
+            
+            if (produtosDaCategoria.length > 0 && produtosDaCategoria[0].imagens && produtosDaCategoria[0].imagens.length > 0) {
+                // Usa a primeira imagem do primeiro produto da categoria
+                imgElement.src = produtosDaCategoria[0].imagens[0];
+            } else {
+                // Usa imagem placeholder se não houver produtos
+                imgElement.src = placeholderImages[categoria];
+            }
         });
     }
 
